@@ -35,6 +35,10 @@ export interface HtmlDataSlot extends HtmlDataMember {}
 
 export interface HtmlDataEvent extends HtmlDataMember {}
 
+export interface HtmlDataMethod extends HtmlDataMember {
+	visibility?: string;
+}
+
 export interface HtmlDataCssProperty extends HtmlDataMember {
 	// Suggested fields:
 	default?: string;
@@ -52,6 +56,7 @@ export interface HtmlDataTag {
 	properties?: HtmlDataProperty[];
 	slots?: HtmlDataSlot[];
 	events?: HtmlDataEvent[];
+	methods?: HtmlDataMethod[];
 	cssProperties?: HtmlDataCssProperty[];
 	cssParts?: HtmlDataCssPart[];
 	deprecated?: boolean;

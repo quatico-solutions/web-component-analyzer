@@ -20,10 +20,12 @@ import {
 	HtmlDataCssPart,
 	HtmlDataCssProperty,
 	HtmlDataEvent,
+	HtmlDataMethod,
 	HtmlDataProperty,
 	HtmlDataSlot,
 	HtmlDataTag
 } from "./custom-elements-json-data";
+import { ComponentMethod } from "../../analyze";
 
 /**
  * Transforms results to json.
@@ -62,6 +64,8 @@ function definitionToHtmlDataTag(definition: ComponentDefinition, checker: TypeC
 
 	const events = arrayDefined(filterVisibility(config.visibility, declaration.events).map(e => componentEventToHtmlDataEvent(e, checker)));
 
+	const methods = arrayDefined(filterVisibility(config.visibility, declaration.methods).map(e => componentMethodToHtmlDataMethod(e, checker)));
+
 	const slots = arrayDefined(declaration.slots.map(e => componentSlotToHtmlDataSlot(e, checker)));
 
 	const cssProperties = arrayDefined(declaration.cssProperties.map(p => componentCssPropToHtmlCssProp(p, checker)));
@@ -75,6 +79,7 @@ function definitionToHtmlDataTag(definition: ComponentDefinition, checker: TypeC
 		attributes: attributes.length === 0 ? undefined : attributes,
 		properties: properties.length === 0 ? undefined : properties,
 		events: events.length === 0 ? undefined : events,
+		methods: methods.length === 0 ? undefined : methods,
 		slots: slots.length === 0 ? undefined : slots,
 		cssProperties: cssProperties.length === 0 ? undefined : cssProperties,
 		cssParts: cssParts.length === 0 ? undefined : cssParts,
@@ -112,6 +117,15 @@ function componentEventToHtmlDataEvent(event: ComponentEvent, checker: TypeCheck
 		description: getDescriptionFromJsDoc(event.jsDoc),
 		deprecated: event.deprecated === true || undefined,
 		deprecatedMessage: typeof event.deprecated === "string" ? event.deprecated : undefined
+	};
+}
+
+function componentMethodToHtmlDataMethod(method: ComponentMethod, checker: TypeChecker): HtmlDataMethod | undefined {
+	return {
+		name: method.name,
+		description: getDescriptionFromJsDoc(method.jsDoc),
+		type: getTypeHintFromType(method.type?.(), checker),
+		visibility: method.visibility
 	};
 }
 
